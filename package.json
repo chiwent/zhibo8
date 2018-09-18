@@ -1,0 +1,34 @@
+{
+  "name": "zhibo8",
+  "version": "1.0.0",
+  "description": "直播吧终端文字直播",
+  "main": "index.js",
+  "bin": {
+    "zhibo8": "bin/index.js"
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chiwent/zhibo8.git"
+  },
+  "keywords": [
+    "zhibo8",
+    "cli",
+    "live"
+  ],
+  "author": "chiwent",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chiwent/zhibo8/issues"
+  },
+  "homepage": "https://github.com/chiwent/zhibo8#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "chalk": "^2.4.1"
+  }
+}

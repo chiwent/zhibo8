@@ -4,9 +4,7 @@ const chalk = require('chalk');
 const readline = require('readline');
 const axios = require('axios');
 const Game = require('../lib/game.js');
-//const axiosRetry = require('axios-retry');
 
-//axiosRetry(axios, { retries: 3 });
 
 let url = 'https://bifen4pc.qiumibao.com/json/list.htm';
 
@@ -16,6 +14,7 @@ let cache_url = 'https://dingshi4pc.qiumibao.com/livetext/data/cache/max_sid/'
 const geme = new Game();
 
 
+let home, visit;
 
 geme.getImportantGame(url)
     .then(response => {
@@ -47,6 +46,8 @@ geme.getImportantGame(url)
             }
             let url = cache_url + data.list[answer - 1].id + '/0.htm';
             let data_id = data.list[answer - 1].id;
+            home = data.list[answer - 1].home_team;
+            visit = data.list[answer - 1].visit_team;
             main(data_id, url);
             // getSrc(url);
         })
@@ -64,154 +65,53 @@ let sleep = (ms) => {
 let flag;
 
 let main = async(data_id, url) => {
-        //console.log('max_id url:', url)
-        while (true) {
-            axios.get(url)
-                .then(response => { // 获取到最大的ID文件
-                    let max_num = response.data;
-                    /*
-                    while (max_num === flag) {  // 用延时的方法来避开重复数据
-                        //setTimeout(() => { console.log('延时以避开重复数据') }, 5000)
-                        setTimeout(() => {}, 100)
-                    }
-                    */
-                    // 用同步的方式来避开重复数据
-                    async function filter(max_num, flag) {
-                        while (max_num === flag) {
-                            await (() => {});
-                        }
-                    }
-                    filter(max_num, flag) // 同步等待，直到出现不重复的数据
-                        /*
-                        let true_num;
-                        if (max_num % 2 === 0) {
-                            true_num = max_num;
-                        }
-                        if (parseInt(response.status) === 404) {
-                            console.log('没有比赛信息了');
-                            process.exit(0);
-                        }
-                        */
-                        // 得到最大的ID文件
-                        // https://dingshi4pc.qiumibao.com/livetext/data/cache/livetext/124716/0/lit_page_2/320.htm
-                    let final_url = 'https://dingshi4pc.qiumibao.com/livetext/data/cache/livetext/' + data_id + '/0/lit_page_2/' + max_num + '.htm';
-                    // console.log('final:', final_url)
+    console.log('max_id url:', url)
+    while (true) {
+        //return new Promise((resolve, reject) => { // 加了Promise 遇到相同信息就退出了
+        axios.get(url)
+            .then(response => { // 获取到最大的ID文件
+                let max_num = response.data;
+                let timer;
+                // 得到最大的ID文件
+                // https://dingshi4pc.qiumibao.com/livetext/data/cache/livetext/124716/0/lit_page_2/320.htm
+                let final_url = 'https://dingshi4pc.qiumibao.com/livetext/data/cache/livetext/' + data_id + '/0/lit_page_2/' + max_num + '.htm';
+                // console.log('final:', final_url)
+                if (max_num !== flag) {
                     async function wait(final_url) {
                         await axios.get(final_url)
                             .then(response => { //获取到了最终的数据，待处理
                                 // console.log(response.status)
                                 let data = response.data;
-                                // console.log(response.data[0].user_chn)
-                                console.log(chalk.blue(`Live-Time: ${data[0].live_time}`))
-                                console.log(chalk.red(`比分 ${data[0].home_score} : ${data[0].visit_score}`))
-                                console.log(chalk.yellow(`Live-Game-Time: ${data[0].live_ptime}`))
-                                console.log('主播 ', chalk.cyan(`${data[0].user_chn}: `, chalk.cyan(data[0].live_text)))
-                                console.log(chalk.green(`: ${data[0].live_time}`))
+                                // console.log(data.length)
+                                if (data.length === 2) {
+                                    console.log(chalk.blue(`Live-Time: ${data[0].live_time}`))
+                                    console.log(chalk.red(`比分 ${home} ${data[0].home_score} : ${visit} ${data[0].visit_score}`))
+                                    console.log(chalk.yellow(`Live-Game-Time: ${data[0].live_ptime}`))
+                                    console.log('主播 ', chalk.cyan(`${data[0].user_chn}: `, chalk.cyan(data[0].live_text)))
+                                    console.log(chalk.green(`: ${data[0].live_time}`))
 
-                                console.log('\n')
-
-                                console.log(chalk.blue(`Live-Time: ${data[1].live_time}`))
-                                console.log(chalk.red(`比分 ${data[1].home_score} : ${data[1].visit_score}`))
-                                console.log(chalk.yellow(`Live-Game-Time: ${data[1].live_ptime}`))
-                                console.log('主播 ', chalk.cyan(`${data[1].user_chn}: `, chalk.cyan(data[1].live_text)))
-                                console.log(chalk.green(`: ${data[1].live_time}`))
+                                    console.log(chalk.blue(`Live-Time: ${data[1].live_time}`))
+                                    console.log(chalk.red(`比分 ${home} ${data[1].home_score} : ${visit} ${data[1].visit_score}`))
+                                    console.log(chalk.yellow(`Live-Game-Time: ${data[1].live_ptime}`))
+                                    console.log('主播 ', chalk.cyan(`${data[1].user_chn}: `, chalk.cyan(data[1].live_text)))
+                                    console.log(chalk.green(`: ${data[1].live_time}`))
+                                    console.log('\n')
+                                }
 
                             }).catch(err => {})
                     }
                     wait(final_url)
                     flag = max_num;
-                })
-                .catch(err => {
-                    //console.log('请求出错, 请检查网络状况或者前面的比赛进度提示')
-                })
-            await sleep(1000)
-        }
+                }
+            })
+            .catch(err => {
+                //console.log('请求出错, 请检查网络状况或者前面的比赛进度提示')
+            })
+
+        //})
+        await sleep(100)
     }
-    /*
-    let getSrc = async(url) => {
-        console.log('url:', url)
-        const client = (url) => axios.create({ baseURL: url });
-        axiosRetry(client, { retries: 4 });
-        axiosRetry(axios, { retryDelay: axiosRetry.exponentialDelay });
-
-        // Custom retry delay
-        axiosRetry(axios, {
-            retryDelay: (retryCount) => {
-                return retryCount * 500;
-            }
-        });
-        while (true) {
-            client(url)
-                .get(url)
-                .then(res => {
-                    let max_num = response.data;
-                    if (max_num % 2) {
-                        max_num++;
-                    }
-                    if (parseInt(response.status) === 404) {
-                        console.log('没有比赛信息了');
-                        //process.exit(0);
-                    }
-                    // 得到最大的ID文件
-                    let final_url = 'https://dingshi4pc.qiumibao.com/livetext/data/cache/livetext/' + data.list[answer - 1].id + '/0/lit_page_2/' + max_num + '.htm';
-                    console.log('final:', final_url)
-                    resolve(final_url)
-                }).then(response => {
-                    console.log(responsen.data)
-                }).catch(err => {
-                    console.log('请求出错, 请检查网络状况或者前面的比赛进度提示')
-                })
-            await sleep(500)
-        }
-    }
-    */
-
-// 超时时间
-/*
-axios.defaults.timeout = 7000;
-
-// Axios使用拦截器全局处理请求重试  https://majing.io/posts/10000005381218
-axios.defaults.retry = 1; //重试次数
-axios.defaults.retryDelay = 1000; //重试延时
-axios.defaults.shouldRetry = (error) => true; //重试条件，默认只要是错误都需要重试
-axios.interceptors.response.use(undefined, (err) => {
-    var config = err.config;
-    // 判断是否配置了重试
-    if (!config || !config.retry) return Promise.reject(err);
-
-    if (!config.shouldRetry || typeof config.shouldRetry != 'function') {
-        return Promise.reject(err);
-    }
-
-    //判断是否满足重试条件
-    if (!config.shouldRetry(err)) {
-        return Promise.reject(err);
-    }
-
-    // 设置重置次数，默认为0
-    config.__retryCount = config.__retryCount || 0;
-
-    // 判断是否超过了重试次数
-    if (config.__retryCount >= config.retry) {
-        return Promise.reject(err);
-    }
-
-    //重试次数自增
-    config.__retryCount += 1;
-
-    //延时处理
-    var backoff = new Promise(function(resolve) {
-        setTimeout(function() {
-            resolve();
-        }, config.retryDelay || 1);
-    });
-
-    //重新发起axios请求
-    return backoff.then(function() {
-        return axios(config);
-    });
-});
-*/
+}
 
 
 // https://dingshi4pc.qiumibao.com/livetext/data/cache/livetext/124716/0/lit_page_2/320.htm

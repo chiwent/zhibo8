@@ -1,13 +1,13 @@
 {
   "name": "zhibo8",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "直播吧终端文字直播",
   "main": "index.js",
-  "bin": {
-    "zhibo8": "bin/index.js"
-  },
   "directories": {
     "lib": "lib"
+  },
+  "bin": {
+    "zhibo8": "bin/index.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -1,13 +1,20 @@
 # zhibo8
 直播吧终端文字直播<br>
+[![NPM](https://nodei.co/npm/zhibo8.png)](https://nodei.co/npm/zhibo8/)
 
 暂时还是测试版，所以使用体验不能保证完美(最近比赛有点少--__--)
 <br>
 
-- 2018-09-20
-修复了之前去重的bug，并且调低了延时等待时间(直播吧小编码字太快了...)<br>
+### 下载
 
-![demo](https://rawgit.com/chiwent/zhibo8/master/assets/zhibo8.png)<br>
+```
+sudo npm i zhibo8 -g
+```
+
+- 2018-09-20
+补上之前遗漏掉的球队名，修复了之前去重的bug，并且调低了延时等待时间(直播吧小编码字太快了...)<br>
+
+
 ![demo2](https://rawgit.com/chiwent/zhibo8/master/assets/zhibo8_2.png)<br>
 
 

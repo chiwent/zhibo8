@@ -1,5 +1,3 @@
-"use strict";
-
 const chalk = require('chalk');
 const readline = require('readline');
 const axios = require('axios');

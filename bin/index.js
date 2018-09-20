@@ -1,3 +1,7 @@
+#!/usr/bin/env node
+
+"use strict";
+
 const chalk = require('chalk');
 const readline = require('readline');
 const axios = require('axios');
@@ -63,7 +67,7 @@ let sleep = (ms) => {
 let flag;
 
 let main = async(data_id, url) => {
-    console.log('max_id url:', url)
+    // console.log('max_id url:', url)
     while (true) {
         //return new Promise((resolve, reject) => { // 加了Promise 遇到相同信息就退出了
         axios.get(url)

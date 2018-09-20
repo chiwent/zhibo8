@@ -1,10 +1,11 @@
 {
   "name": "zhibo8",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "直播吧终端文字直播",
   "main": "index.js",
   "directories": {
-    "lib": "lib"
+    "lib": "lib",
+    "bin": "bin"
   },
   "bin": {
     "zhibo8": "bin/index.js"
